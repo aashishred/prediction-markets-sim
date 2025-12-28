@@ -1,0 +1,4 @@
+## §4 Implications (The Future of Prediction Markets)
+- §4 will be applying the theory to saying which application areas are more/less suitable for prediction markets to provide value, taking into account case studies and empirical data. the theme is that they're good for macro stuff (eg OBR) and not so much for micro stuff (eg within a company, Google internal prediction market).
+- Maybe for section 4 go check section 3 of “bets are off” money stuff podcast
+- is a corollary of the discovery-central view rather than the aggregation-central view that Soros is wrong when he talks about the importance of how market participants expectations, demand/supply curves, are shaped by watching the market? 

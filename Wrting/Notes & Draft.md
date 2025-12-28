@@ -1,0 +1,55 @@
+- **Clarify the epistemic boundaries**: The author could sharpen the distinction between _information aggregation_ (Hayek/Galton) and _information generation_ (innovation, discovery). §3 begins to do this but could benefit from citing work on _endogenous information acquisition_ (e.g. Grossman & Stiglitz 1980; Hellwig 1980).
+- also admits qualitative distinctions between info that has leaked directly into minds qua knowledge (that can be aggregated), and that has leaked into the world not as knowledge (that can be discovered)
+- 
+- Baldly stated: it is often not that valuable to aggregate all available information that people have.
+	- Obvious in the case of Knightian uncertainty; if it is inherently unknowable what will be the effect of a policy or how long a project will take to complete, then the probability implied by the market price may be better than nothing, but the error bars around it are so large that it wasn't worth the transaction cost to determine; the best guess of a product manager is not that much worse than the best guess of the collective.
+- Claim: prediction markets work best when they are not just aggregating and transmitting knowledge, but when they are actually **creating/generating** knowledge.
+	- eg, if we have prediction markets for the CBO/OBR doing budget forecasts, then in the same way that lots of liquidity in financial markets incentivise professional (eg stock) markets participants to take people's money by being well-calibrated in regard to the expected discounted future cash flows of companies, then an analogous market can incentivise market participants to be well-calibrated in regard to probable budgetary consequences of some policy, etc
+	- in particular, it incentivises them to put in the work to **build models**, bet on their beliefs, and so on; existing institutions have good, hard-working people trying their best, but obviously this will be improved by drawing on the dispersed knowledge of society rather than just one group of smart, hard-working bureaucrats., just like in financial markets.
+	- Example of distinction: in maths word problems like “how many colours do you need to paint each side of a cube a different colour” (Cowen, create your own economy, points out 20% of students did not know the answer), presumably because though they had all the right pieces of knowledge, they didn’t have the focus to put them together in the right way…
+- whereas in an office setting at Google, an internal prediction market will certainly draw effectively on the knowledge dispersed among the workers, but isn't going to cause them to do a lot of working creating knowledge, which is to say, articulating their theories, modelling their consequences, falsifying their predictions, updating on new information and so on
+	- or at least, if they do this, the rewards on the time it takes to create new knowledge needs to be competitive with the other productive work they could be doing, for which they take their salary...
+	- specialisiation & division of labour! do we end up with divisions within companies dedicated to creating this knowledge through markets? this seems implausible. it is only at a more macro level, figuring out things about the economy, about policy and politics, and so on, that this level of specialisation makes sense, and so prediction markets create knowledge!
+	- - Apply a Coasean argument: markets are efficient when the expected informational surplus exceeds coordination costs.
+		- 1. - Reframe the Grossman–Stiglitz paradox as a general epistemic constraint: prices can’t be perfectly informative _and_ self-financing.
+	    - State your main normative takeaway: that epistemic institutions need to explicitly subsidize discovery to achieve efficient knowledge aggregation.
+- draw on stiglitz's paper on the impossibility of informationally efficient markets
+	- > **Aside (Grossman–Stiglitz):** When information is costly, a market with perfectly revealing prices is impossible (Grossman & Stiglitz, 1980). If prices already embodied all private knowledge, nobody would pay to acquire any, so the knowledge would cease to be produced. In equilibrium, prices are **partially** revealing and informed traders earn just enough edge to cover research costs. For prediction markets this means: (i) **knowledge production requires rents**, created either by organic noise/expressive order flow or by **explicit subsidies** (AMM budgets, bounties, fee rebates); (ii) absent those rents, internal markets (e.g., inside Google) won’t elicit much new research—employees rationally prioritize salaried work; (iii) at macro scale, with deeper liquidity and/or subsidy, specialization becomes viable and the market _does_ “create” knowledge by financing model-building.
+![[Pasted image 20250808190057.png]]
+
+![[Pasted image 20251023211709.png]]
+![[Pasted image 20251023211812.png]]
+First, a lemma: it is often not that valuable to aggregate all information available to market participants. Perhaps this is obvious to you, but if not, consider as an intuition pump the case of [Knightian uncertainty](https://en.wikipedia.org/wiki/Knightian_uncertainty). [explain what that is; Keynes’ exposition:]
+
+> By “uncertain” knowledge, let me explain, I do not mean to distinguish what is known for certain from what is only probable. The game of roulette is not subject, in this sense, to uncertainty; nor is the prospect of a Victory bond being drawn. Or, again, the expectation of life is only slightly uncertain. Even the weather is only moderately uncertain. The sense in which I am using the term is that in which the prospect of a European war is uncertain, or the price of copper and the rate of interest twenty years hence, or the obsolescence of a new invention, or the position of private wealth-owners in the social system in 1970. About these matters there is no scientific basis on which to form any calculable probability whatever. We simply do not know. Nevertheless, the necessity for action and for decision compels us as practical men to do our best to overlook this awkward fact and to behave exactly as we should if we had behind us a good Benthamite calculation of a series of prospective advantages and disadvantages, each multiplied by its appropriate probability, waiting to be summed.
+> 
+> John Maynard Keynes, “General Theory of Employment”, Quarterly Journal of Economics, 1937
+
+If the information we desire is like one of Keynes’ examples — perhaps the long-term effect of a policy, or how long a novel project will take to complete — then the probability implied by a market price may be better than nothing, but the error bars around it are so large that it wasn’t worth the transaction cost to determine. [The best guess of a product manager is not that much worse than the best guess of the collective.]
+
+Claim: prediction markets work best when they are not just aggregating and transmitting knowledge, but when they are actually **creating/generating** knowledge: Hayek 1945 neglects Hayek 1968
+
+- eg, if we have prediction markets for the CBO/OBR doing budget forecasts, then in the same way that lots of liquidity in financial markets incentivise professional (eg stock) markets participants to take people's money by being well-calibrated in regard to the expected discounted future cash flows of companies, then an analogous market can incentivise market participants to be well-calibrated in regard to probable budgetary consequences of some policy, etc
+
+- in particular, it incentivises them to put in the work to **build models**, bet on their beliefs, and so on; existing institutions have good, hard-working people trying their best, but obviously this will be improved by drawing on the dispersed knowledge of society rather than just one group of smart, hard-working bureaucrats., just like in financial markets.
+
+- whereas in an office setting at Google, an internal prediction market will certainly draw effectively on the knowledge dispersed among the workers, but isn't going to cause them to do a lot of working creating knowledge, which is to say, articulating their theories, modelling their consequences, falsifying their predictions, updating on new information and so on
+
+- or at least, if they do this, the rewards on the time it takes to create new knowledge needs to be competitive with the other productive work they could be doing, for which they take their salary...
+
+- specialisiation & division of labour! do we end up with divisions within companies dedicated to creating this knowledge through markets? this seems implausible. it is only at a more macro level, figuring out things about the economy, about policy and politics, and so on, that this level of specialisation makes sense, and so prediction markets create knowledge!
+
+- draw on stiglitz's paper on the impossibility of informationally efficient markets
+
+[
+
+![](https://substackcdn.com/image/fetch/$s_!byvs!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F6d3f0869-9cf5-495d-a212-d7284588f533_584x450.png)
+
+
+![[Pasted image 20251022134053.png]]
+
+Prediction markets, by contrast, often operate in domains where the relevant knowledge does **not yet exist**. When we ask “Will this policy reduce unemployment?” or “Will this AI system pass the Turing Test by 2030?”, we are not aggregating widely distributed, tacit information — we are trying to _generate_ it. Nobody knows the answer; there are no local signals of truth to aggregate, only conjectures. In such cases, prediction markets are not merely mechanisms for transmitting dispersed knowledge — they are instruments for incentivising the _creation_ of new knowledge. That distinction is crucial.
+
+This explains why most internal corporate prediction markets fizzle out after a few months. Within an organization, employees already have their incentives aligned to produce _operational_ knowledge, not _forecasting_ knowledge. The small financial upside of being right on a forecast rarely compensates for the opportunity cost of their actual job. A rational worker at Google or Boeing does not build a quantitative model of project timelines for a £50 payoff. The equilibrium is simply silence.
+
+These problems also reveal something about institutional scale. The market mechanism excels where the epistemic division of labour is large enough to justify _specialization_ in information production. In global financial markets, this condition is satisfied: analysts, quants, and arbitrageurs spend entire careers gathering and modeling information because the rewards for small informational advantages are enormous. In small, bounded systems like firms, or for questions whose resolution yields no tradable asset (e.g. “Will our new HR policy improve retention?”), the division of epistemic labour collapses. There is no niche for the professional forecaster, because the informational rents are too thin.
