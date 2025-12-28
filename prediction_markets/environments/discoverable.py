@@ -53,7 +53,8 @@ class DiscoverableConfig(EnvironmentConfig):
     validity_uncertainty: float = 0.1
     bearing_known: bool = False  # If False, agents don't know signal weights
     cost_varies: bool = False     # If True, some signals cost more
-    diminishing_returns: bool = False  # If True, later discoveries less valuable
+    diminishing_returns: bool = True  # If True, later discoveries less valuable (DEFAULT ON)
+    time_limit: int | None = None  # If set, discovery only allowed until this step
 
 
 @dataclass

@@ -1,10 +1,17 @@
 """
 Metrics for evaluating prediction market performance.
 
-These metrics help test the core hypotheses:
-- How accurate are market prices compared to truth?
-- How much does aggregation help vs simple averaging?
-- How is value distributed among participants?
+CRITICAL DISTINCTION:
+- ESTIMATION ERROR: |Price - Latent Probability| (how well did we estimate?)
+- OUTCOME ERROR: |Price - Realized Outcome| (did we predict correctly?)
+
+These are DIFFERENT targets! A price of 0.60 SHOULD lose 40% of the time.
+Mixing them confuses calibration with single-outcome luck.
+
+Correct metrics:
+- Estimation error (vs latent probability)
+- Brier score across runs (calibration)
+- Baseline comparisons (mean belief, pooled posterior)
 """
 
 from typing import Any
@@ -13,40 +20,88 @@ import numpy as np
 from .runner import SimulationResult
 
 
-def calculate_price_error(
+def calculate_estimation_error(
     result: SimulationResult,
     at_step: int | None = None
 ) -> float:
     """
-    Calculate the absolute error between market price and true probability.
+    Calculate ESTIMATION ERROR: |Price - Latent Probability|.
 
-    For binary contracts, this is |price - truth|.
-    For multinomial, this is the L1 distance / 2.
+    This measures how well the market estimated the TRUE probability,
+    NOT whether it predicted the realized outcome correctly.
+
+    For a well-calibrated market:
+    - Latent P = 0.60 → Price should be ~0.60
+    - Outcome can still be 0 (happens 40% of the time!)
 
     Args:
         result: Simulation result
         at_step: Step to evaluate (default: final)
 
     Returns:
-        Price error (lower is better)
+        Estimation error (lower is better)
+    """
+    if result.theoretical_aggregate is None:
+        return np.nan
+
+    if at_step is None:
+        prices = result.final_prices
+    else:
+        prices = result.price_history[at_step]
+
+    # Error vs LATENT probability (theoretical aggregate)
+    return np.sum(np.abs(prices - result.theoretical_aggregate)) / 2
+
+
+def calculate_outcome_error(
+    result: SimulationResult,
+    at_step: int | None = None
+) -> float:
+    """
+    Calculate OUTCOME ERROR: |Price - Realized Outcome|.
+
+    WARNING: This is NOT a good metric for single runs!
+    A price of 0.60 SHOULD lose when outcome is 0.
+
+    Use this metric ONLY:
+    - Aggregated across many runs (Brier score)
+    - For calibration analysis
+
+    Args:
+        result: Simulation result
+        at_step: Step to evaluate (default: final)
+
+    Returns:
+        Outcome error (misleading for single runs!)
     """
     if at_step is None:
         prices = result.final_prices
     else:
         prices = result.price_history[at_step]
 
-    # True probabilities
+    # True REALIZED outcome (0 or 1)
     n_outcomes = len(prices)
     true_probs = np.zeros(n_outcomes)
 
     if isinstance(result.true_value, (int, np.integer)):
         true_probs[result.true_value] = 1.0
     else:
-        # For continuous, true_probs[0] = true_value
         true_probs[0] = result.true_value
 
-    # L1 distance divided by 2 (max possible is 1)
     return np.sum(np.abs(prices - true_probs)) / 2
+
+
+def calculate_price_error(
+    result: SimulationResult,
+    at_step: int | None = None
+) -> float:
+    """
+    DEPRECATED: Use calculate_estimation_error() or calculate_outcome_error().
+
+    This was ambiguous - use the explicit versions instead.
+    For backward compatibility, this returns outcome error.
+    """
+    return calculate_outcome_error(result, at_step)
 
 
 def calculate_price_error_vs_aggregate(result: SimulationResult) -> float:
@@ -291,9 +346,122 @@ def calculate_trading_activity(result: SimulationResult) -> dict[str, Any]:
     }
 
 
+def calculate_baseline_comparisons(result: SimulationResult, agent_beliefs: list[np.ndarray] | None = None) -> dict[str, float]:
+    """
+    Compare market to baseline aggregation methods.
+
+    Baselines:
+    1. Mean belief: Simple average of all agent beliefs
+    2. Best individual: Best single agent's belief
+    3. Prior: Uniform distribution
+
+    Args:
+        result: Simulation result
+        agent_beliefs: List of final agent beliefs (if available)
+
+    Returns:
+        Dictionary with errors for each baseline
+    """
+    if result.theoretical_aggregate is None:
+        return {}
+
+    latent = result.theoretical_aggregate
+    market_price = result.final_prices
+
+    # Market estimation error
+    market_error = np.sum(np.abs(market_price - latent)) / 2
+
+    baselines = {
+        "market_error": market_error,
+    }
+
+    # Prior (uniform)
+    n_outcomes = len(latent)
+    prior = np.ones(n_outcomes) / n_outcomes
+    baselines["prior_error"] = np.sum(np.abs(prior - latent)) / 2
+
+    # Mean belief and best individual (if available)
+    if agent_beliefs is not None and len(agent_beliefs) > 0:
+        mean_belief = np.mean(agent_beliefs, axis=0)
+        baselines["mean_belief_error"] = np.sum(np.abs(mean_belief - latent)) / 2
+
+        # Best individual agent
+        individual_errors = [np.sum(np.abs(belief - latent)) / 2 for belief in agent_beliefs]
+        baselines["best_individual_error"] = min(individual_errors)
+        baselines["worst_individual_error"] = max(individual_errors)
+        baselines["median_individual_error"] = np.median(individual_errors)
+
+    return baselines
+
+
+def calculate_calibration_curve(results: list[SimulationResult], n_bins: int = 10) -> dict[str, Any]:
+    """
+    Calculate calibration curve: are X% predictions right X% of the time?
+
+    Args:
+        results: List of simulation results
+        n_bins: Number of probability bins
+
+    Returns:
+        Dictionary with bin centers, empirical frequencies, and counts
+    """
+    if not results:
+        return {}
+
+    # Collect (predicted_prob, outcome) pairs
+    predictions = []
+    outcomes = []
+
+    for result in results:
+        if len(result.final_prices) == 2:  # Binary only for now
+            prob = result.final_prices[1]  # P(Yes)
+            outcome = float(result.true_value)
+            predictions.append(prob)
+            outcomes.append(outcome)
+
+    if not predictions:
+        return {}
+
+    predictions = np.array(predictions)
+    outcomes = np.array(outcomes)
+
+    # Bin the predictions
+    bins = np.linspace(0, 1, n_bins + 1)
+    bin_centers = (bins[:-1] + bins[1:]) / 2
+    empirical_freq = np.zeros(n_bins)
+    counts = np.zeros(n_bins)
+
+    for i in range(n_bins):
+        mask = (predictions >= bins[i]) & (predictions < bins[i + 1])
+        if i == n_bins - 1:  # Include right endpoint
+            mask = (predictions >= bins[i]) & (predictions <= bins[i + 1])
+
+        counts[i] = np.sum(mask)
+        if counts[i] > 0:
+            empirical_freq[i] = np.mean(outcomes[mask])
+        else:
+            empirical_freq[i] = np.nan
+
+    # Expected calibration error (ECE)
+    valid_bins = ~np.isnan(empirical_freq)
+    if np.any(valid_bins):
+        ece = np.sum(counts[valid_bins] * np.abs(bin_centers[valid_bins] - empirical_freq[valid_bins])) / np.sum(counts)
+    else:
+        ece = np.nan
+
+    return {
+        "bin_centers": bin_centers,
+        "empirical_frequencies": empirical_freq,
+        "counts": counts,
+        "expected_calibration_error": ece,
+    }
+
+
 def summarize_batch(results: list[SimulationResult]) -> dict[str, Any]:
     """
     Summarize results across multiple simulation runs.
+
+    NEW: Properly separates estimation vs outcome errors.
 
     Args:
         results: List of simulation results
@@ -304,24 +472,40 @@ def summarize_batch(results: list[SimulationResult]) -> dict[str, Any]:
     if not results:
         return {}
 
-    price_errors = [calculate_price_error(r) for r in results]
+    # ESTIMATION errors (vs latent probability)
+    estimation_errors = [calculate_estimation_error(r) for r in results if not np.isnan(calculate_estimation_error(r))]
+
+    # OUTCOME errors (vs realized outcome - only for Brier)
+    outcome_errors = [calculate_outcome_error(r) for r in results]
     info_ratios = [calculate_information_ratio(r) for r in results]
     agg_efficiencies = [calculate_aggregation_efficiency(r) for r in results]
 
     # Filter out NaN values
     agg_efficiencies_clean = [x for x in agg_efficiencies if not np.isnan(x)]
 
-    # Brier score across all runs
+    # Brier score across all runs (proper calibration metric)
     brier = calculate_brier_score(results)
+
+    # Calibration curve
+    calibration = calculate_calibration_curve(results)
 
     return {
         "n_runs": len(results),
-        "mean_price_error": np.mean(price_errors),
-        "std_price_error": np.std(price_errors),
+        # ESTIMATION metrics (what we care about!)
+        "mean_estimation_error": np.mean(estimation_errors) if estimation_errors else np.nan,
+        "std_estimation_error": np.std(estimation_errors) if estimation_errors else np.nan,
+        # OUTCOME metrics (for calibration only)
+        "mean_outcome_error": np.mean(outcome_errors),
+        "std_outcome_error": np.std(outcome_errors),
+        "brier_score": brier,
+        # Other metrics
         "mean_information_ratio": np.mean(info_ratios),
         "std_information_ratio": np.std(info_ratios),
         "mean_aggregation_efficiency": np.mean(agg_efficiencies_clean) if agg_efficiencies_clean else np.nan,
-        "brier_score": brier,
-        "all_price_errors": price_errors,
+        # Calibration
+        "calibration": calibration,
+        # Raw data
+        "all_estimation_errors": estimation_errors,
+        "all_outcome_errors": outcome_errors,
         "all_info_ratios": info_ratios,
     }
