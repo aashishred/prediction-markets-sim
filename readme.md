@@ -310,6 +310,38 @@ Both environments achieve similar accuracy! This supports the Grossman-Stiglitz 
 
 The higher variance in the discoverable environment reflects the additional uncertainty from the discovery process — signals may be wrong, and their relevance may be unclear.
 
+### Critical Issues Identified
+
+**The current metrics are misleading!** After review, several fundamental problems were identified:
+
+1. **Mixing Two Different Targets**
+   - Currently measuring "Price vs Realized Outcome"
+   - This confuses ESTIMATION quality with single-outcome LUCK
+   - A price of 0.60 SHOULD lose 40% of the time (when outcome is No)!
+   - This is not evidence of bad aggregation—it's exactly what calibrated forecasting looks like
+
+2. **Correct Metrics Should Be**
+   - **Estimation error**: |Price - Latent Probability| (how well did we estimate the true probability?)
+   - **Calibration**: Brier score across many runs (are 60% predictions right 60% of the time?)
+   - **Baseline comparisons**: Does the market beat mean belief? Pooled posterior? Best individual agent?
+
+3. **Why Prices Barely Move**
+   - Liquidity parameter b=100 is TOO HIGH (prices move ~0.04 when they should move ~0.1-0.2)
+   - Trade threshold 0.02 is conservative
+   - Agent beliefs cluster near 0.5 due to weak/noisy signals
+
+4. **Discovery Is Not Scarce**
+   - Agents currently discover 100% of information
+   - No genuine Grossman-Stiglitz tradeoff
+   - Need: stricter budget limits, time constraints, diminishing returns
+
+5. **Missing Baselines**
+   - No comparison to simple mean of agent beliefs
+   - No comparison to oracle pooled posterior
+   - Can't tell if market mechanism is adding value over simpler aggregation
+
+**Next steps**: Fix metrics, calibrate liquidity parameter, add baselines, make discovery scarce.
+
 ---
 
 ## How to Run
@@ -330,12 +362,29 @@ pip install numpy scipy pandas matplotlib plotly statsmodels pytest
 python -m pytest tests/test_basic.py -v
 ```
 
-### Run Diagnostic Visualization
-This shows exactly what's happening in a single simulation:
+### Run Visualizations
+
+**Comprehensive Dashboard (RECOMMENDED - Start here!)**
+```bash
+python experiments/comprehensive_visualization.py
+```
+Creates detailed multi-panel visualizations showing:
+- Price evolution vs latent probability vs realized outcome
+- Trading activity and price impact by agent type
+- Discovery attempts and success rates
+- Error decomposition (Price vs Latent vs Realized)
+- Agent belief distributions
+- Summary statistics
+
+Outputs:
+- `comprehensive_dashboard.png` - Full simulation dashboard
+- `mechanism_explanation.png` - How the simulation works
+
+**Single Simulation Diagnostic**
 ```bash
 python experiments/visualize_simulation.py
 ```
-Outputs detailed step-by-step trace and generates `diagnostic_visualization.png`.
+Step-by-step trace of a single simulation. Generates `diagnostic_visualization.png`.
 
 ### Run Batch Experiments
 ```bash
