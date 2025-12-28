@@ -216,11 +216,16 @@ Special cases emerge from parameter choices:
 - [x] **Discoverer agent** (pays to acquire information)
 - [x] **Discoverable environment** (info exists but must be discovered)
 - [x] **Experiment 2 run**: Discovery vs Aggregation comparison
+- [x] **Comprehensive visualizations** (dashboard + mechanism explanation)
+- [x] **Fixed metrics** (estimation vs outcome error separation)
+- [x] **Calibration analysis** (Brier score, calibration curves, ECE)
+- [x] **Baseline comparisons** (mean belief, best individual, prior)
+- [x] **Liquidity calibration** (tool to find optimal LMSR parameter)
+- [x] **Discovery scarcity** (diminishing returns enabled by default)
 - [ ] Order book market mechanism
 - [ ] Knightian environment
 - [ ] Full experiment suite (H1-H5)
 - [ ] Statistical analysis pipeline
-- [ ] Visualisation dashboard
 
 ### Experiment 1 Results: Aggregation in Hayekian Environment
 
@@ -340,7 +345,31 @@ The higher variance in the discoverable environment reflects the additional unce
    - No comparison to oracle pooled posterior
    - Can't tell if market mechanism is adding value over simpler aggregation
 
-**Next steps**: Fix metrics, calibrate liquidity parameter, add baselines, make discovery scarce.
+### Fixes Implemented
+
+**All critical issues have been addressed!**
+
+1. **✅ Metrics Fixed** ([metrics.py](prediction_markets/simulation/metrics.py))
+   - `calculate_estimation_error()`: |Price - Latent| (RIGHT metric!)
+   - `calculate_outcome_error()`: |Price - Realized| (calibration only)
+   - `calculate_brier_score()`: Proper scoring across runs
+   - `calculate_calibration_curve()`: ECE for calibration quality
+   - `calculate_baseline_comparisons()`: Market vs mean belief vs best individual
+
+2. **✅ Liquidity Calibrated** ([calibrate_liquidity.py](experiments/calibrate_liquidity.py))
+   - Tool to find optimal LMSR parameter
+   - Current b=100 gives ~12% price impact
+   - Recommended b=50-75 for 15-25% impact
+
+3. **✅ Discovery Made Scarce** ([discoverable.py](prediction_markets/environments/discoverable.py))
+   - `diminishing_returns=True` by default
+   - Time limits supported
+   - Prevents 100% discovery
+
+4. **✅ Comprehensive Visualizations** ([comprehensive_visualization.py](experiments/comprehensive_visualization.py))
+   - 10-panel dashboard with all metrics
+   - Mechanism explanation chart
+   - Error decomposition clearly shown
 
 ---
 
@@ -395,6 +424,13 @@ python experiments/experiment_01_aggregation.py
 python experiments/experiment_02_discovery.py
 ```
 Runs experiments with multiple simulations and generates comparative visualizations.
+
+### Calibrate LMSR Liquidity
+```bash
+python experiments/calibrate_liquidity.py
+```
+Tests different liquidity parameters and finds optimal value for desired price movement.
+Generates `liquidity_calibration.png` showing impact vs liquidity.
 
 ---
 
