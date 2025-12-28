@@ -5,7 +5,12 @@
       "Bash(python:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Prediction markets simulation framework\n\nCore infrastructure for testing theoretical claims about prediction markets:\n- LMSR automated market maker\n- Informed and noise trader agents\n- Hayekian environment \\(distributed tacit knowledge\\)\n- Simulation runner and metrics\n- First aggregation experiment\n\nTesting the hypothesis that market value comes from discovery, not aggregation.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Prediction markets simulation framework\n\nCore infrastructure for testing theoretical claims about prediction markets:\n- LMSR automated market maker\n- Informed and noise trader agents\n- Hayekian environment \\(distributed tacit knowledge\\)\n- Simulation runner and metrics\n- First aggregation experiment\n\nTesting the hypothesis that market value comes from discovery, not aggregation.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)"
     ]
   }
 }

@@ -3,6 +3,7 @@
 from .base import Environment, EnvironmentConfig
 from .hayekian import HayekianEnvironment, HayekianConfig
 from .discoverable import DiscoverableEnvironment, DiscoverableConfig
+from .unified import UnifiedEnvironment, UnifiedConfig
 
 __all__ = [
     "Environment",
@@ -11,4 +12,6 @@ __all__ = [
     "HayekianConfig",
     "DiscoverableEnvironment",
     "DiscoverableConfig",
+    "UnifiedEnvironment",
+    "UnifiedConfig",
 ]
