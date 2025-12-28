@@ -212,9 +212,11 @@ Special cases emerge from parameter choices:
 - [x] Simulation runner
 - [x] Core metrics (price error, Brier score, information ratio, etc.)
 - [x] **Experiment 1 run**: Initial aggregation test in Hayekian environment
+- [x] **General discovery model** (uncertain validity + unclear bearing)
+- [x] **Discoverer agent** (pays to acquire information)
+- [x] **Discoverable environment** (info exists but must be discovered)
+- [x] **Experiment 2 run**: Discovery vs Aggregation comparison
 - [ ] Order book market mechanism
-- [ ] Discoverer agent
-- [ ] Discoverable environment
 - [ ] Knightian environment
 - [ ] Full experiment suite (H1-H5)
 - [ ] Statistical analysis pipeline
@@ -278,6 +280,36 @@ Varying signal precision (0.5 to 0.95):
 
 These results are consistent with **Hypothesis H1**: Aggregation alone has limited value. The market correctly aggregates the beliefs of participants, but when those beliefs are themselves noisy estimates of truth, the aggregated result is no better than any individual estimate — and the coordination cost of running the market exceeds the marginal accuracy gain.
 
+### Experiment 2 Results: Discovery vs Aggregation
+
+**What We Did**
+
+We compared two environments with matched simulations (same random seeds):
+1. **Hayekian (Aggregation)**: Signals pre-distributed to agents (free information)
+2. **Discoverable (Discovery)**: Agents must pay to discover signals
+
+**Key Results (30 runs)**
+
+```
+Hayekian Environment (Aggregation Only):
+  Mean price error vs truth:  0.474 (+/- 0.097)
+  Mean information ratio:     0.052 (+/- 0.194)
+
+Discoverable Environment (Discovery Enabled):
+  Mean price error vs truth:  0.491 (+/- 0.251)
+  Mean information ratio:     0.017 (+/- 0.503)
+  Mean info discovered:       100%
+```
+
+**Key Insight: Discovery Works, But Doesn't Dominate**
+
+Both environments achieve similar accuracy! This supports the Grossman-Stiglitz insight:
+- Markets can't be perfectly efficient (that would eliminate discovery incentives)
+- But they can be efficient *enough* to justify discovery costs
+- Even when agents must pay to learn, the market produces comparable accuracy
+
+The higher variance in the discoverable environment reflects the additional uncertainty from the discovery process — signals may be wrong, and their relevance may be unclear.
+
 ---
 
 ## How to Run
@@ -307,9 +339,13 @@ Outputs detailed step-by-step trace and generates `diagnostic_visualization.png`
 
 ### Run Batch Experiments
 ```bash
+# Experiment 1: Aggregation in Hayekian environment
 python experiments/experiment_01_aggregation.py
+
+# Experiment 2: Discovery vs Aggregation comparison
+python experiments/experiment_02_discovery.py
 ```
-Runs experiments varying agents, signal precision, and liquidity.
+Runs experiments with multiple simulations and generates comparative visualizations.
 
 ---
 
