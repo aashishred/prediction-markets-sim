@@ -112,7 +112,7 @@ Created 10-panel dashboard showing:
 
 ---
 
-## Phase 3: Continuous Leakiness Spectrum (In Progress)
+## Phase 3: Continuous Leakiness Spectrum (Completed)
 
 ### Motivation (GPT-5 Feedback Point #1)
 Current system has three discrete environment types (Knightian, Hayekian, Discoverable).
@@ -171,6 +171,88 @@ Verified across spectrum (0.0 to 1.0):
 1. **Testable Hypothesis**: Can now plot market performance as smooth curve across leakiness
 2. **Theoretical Clarity**: "Leakiness" is now a measurable parameter, not just a label
 3. **H4 Experiment**: Can test if markets excel at medium leakiness (0.3-0.7)
+
+---
+
+## Phase 4: Code Quality & Testing (Completed)
+
+### Motivation
+Comprehensive codebase review to improve code quality, fix bugs, and add test coverage.
+
+### Changes Made
+
+#### 1. Fixed LMSR Naming Typo
+**Problem**: Class was named `LSMRMarket` but correct acronym is **LMSR** (Logarithmic Market Scoring Rule).
+
+**Solution**:
+- Renamed class to `LMSRMarket` (correct spelling)
+- Added `LSMRMarket` as backward-compatible alias
+- Updated all exports and documentation
+
+**Files changed**: `lmsr.py`, `markets/__init__.py`
+
+#### 2. Fixed Directory Typo
+**Problem**: `Wrting/` directory should be `Writing/`
+
+**Solution**: Renamed directory via git
+
+#### 3. Improved Module Exports
+**Problem**: Many classes/functions not exported in `__init__.py` files, forcing verbose imports.
+
+**Solution**: Updated all `__init__.py` files:
+- `prediction_markets/__init__.py`: Added top-level imports with quick start example
+- `markets/__init__.py`: Added `Trade`, `MarketState`, `ContractType`, `ResolutionStatus`
+- `agents/__init__.py`: Added `NoiseTraderType`
+- `environments/__init__.py`: Added `EnvironmentType`
+- `simulation/__init__.py`: Added all new metric functions, `run_batch`, `summarize_batch`
+
+**New Usage**:
+```python
+# Before (verbose)
+from prediction_markets.markets.lmsr import LSMRMarket
+from prediction_markets.agents.informed import InformedAgent
+
+# After (convenient)
+from prediction_markets import LMSRMarket, InformedAgent
+```
+
+#### 4. Added Comprehensive Test Coverage
+**Problem**: Only 12 basic tests existed; no coverage for metrics or environments.
+
+**Solution**: Added two new test files:
+
+**`tests/test_metrics.py`** (16 tests):
+- `TestEstimationError`: Perfect/imperfect estimation, missing aggregate handling
+- `TestOutcomeError`: Correct/wrong/uncertain predictions
+- `TestBrierScore`: Perfect calibration, uncertain predictions, empty results
+- `TestInformationRatio`: Perfect and prior predictions
+- `TestBaselineComparisons`: With and without theoretical aggregate
+- `TestCalibrationCurve`: Empty and binary results
+- `TestSummarizeBatch`: Empty and populated batches
+
+**`tests/test_environments.py`** (15 tests):
+- `TestUnifiedEnvironment`: Leakiness validation, zero/medium/full leakiness regimes, signal distribution, theoretical aggregate, discovery opportunities, cost scaling, reproducibility
+- `TestHayekianEnvironment`: Creation, signal distribution, theoretical aggregate
+- `TestEnvironmentReproducibility`: Different seeds produce different results
+
+**Result**: **43 tests passing** (up from 12)
+
+#### 5. Updated Documentation
+- Added quick usage example to `readme.md`
+- Fixed Windows path order in installation instructions
+- Updated version to 0.3.0 in `__init__.py`
+- Added test coverage section to status
+
+### Lessons Learned
+
+#### Naming Matters
+The `LSMRMarket` vs `LMSRMarket` confusion could have caused import errors for users. Backward-compatible aliases are essential.
+
+#### Tests Catch Regressions
+Adding tests for metrics immediately caught edge cases (empty results, missing aggregates) that could have caused runtime errors.
+
+#### Clean Exports Improve Usability
+Top-level imports (`from prediction_markets import LMSRMarket`) make the library much more accessible to newcomers.
 
 ---
 
@@ -345,10 +427,19 @@ When `best_edge == abs(worst_edge)`, agents didn't trade due to tie-breaking log
 - Implemented calibration metrics
 - Fixed liquidity parameter
 
-### v0.3 - Continuous Leakiness (Current)
+### v0.3 - Continuous Leakiness
 - Unified environment with leakiness parameter
 - Smooth transition across information regimes
 - Backward compatible with old environments
+
+### v0.3.1 - Code Quality & Testing (Current)
+- Fixed `LSMRMarket` → `LMSRMarket` naming (correct LMSR acronym)
+- Fixed `Wrting` → `Writing` directory typo
+- Added comprehensive module exports to all `__init__.py` files
+- Added top-level imports for convenient usage
+- Added 31 new unit tests (metrics + environments)
+- **43 tests now passing** with pytest
+- Updated documentation with quick usage example
 
 ### v0.4 - Planned (GPT-5 Feedback)
 - Signal generation refactor (θ first, signals as evidence)

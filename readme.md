@@ -73,6 +73,41 @@ tests/               # Unit and integration tests
 
 This enables smooth testing across the information spectrum rather than three discrete regimes.
 
+### Quick Usage Example
+
+```python
+from prediction_markets import (
+    LMSRMarket, BinaryContract,
+    InformedAgent, NoiseTrader,
+    UnifiedEnvironment, UnifiedConfig,
+    Simulation, SimulationConfig,
+)
+
+# Create a market
+contract = BinaryContract(name="Will X happen?")
+market = LMSRMarket(contract=contract, liquidity=50)
+
+# Create environment with 50% leakiness (Hayekian-like)
+config = UnifiedConfig(leakiness=0.5, n_signals=20, random_seed=42)
+env = UnifiedEnvironment(config=config)
+
+# Create agents
+agents = [
+    InformedAgent(agent_id="informed_1", signal_precision=0.8),
+    NoiseTrader(agent_id="noise_1", trade_probability=0.3),
+]
+
+# Run simulation
+sim = Simulation(
+    environment=env,
+    market=market,
+    agents=agents,
+    config=SimulationConfig(n_steps=50)
+)
+result = sim.run()
+print(f"Final price: {result.final_prices}")
+```
+
 ---
 
 ## Current Status
@@ -87,6 +122,7 @@ This enables smooth testing across the information spectrum rather than three di
 - [x] **Unified environment** with continuous leakiness parameter
 - [x] Simulation runner with configurable parameters
 - [x] General discovery model (uncertain validity + unclear bearing)
+- [x] **Clean module exports** with top-level imports (v0.3.0)
 
 **Metrics & Analysis**
 - [x] **Fixed metric confusion** (estimation error vs outcome error properly separated)
@@ -94,6 +130,12 @@ This enables smooth testing across the information spectrum rather than three di
 - [x] **Calibration metrics** (Brier score, calibration curves, ECE)
 - [x] **Liquidity calibration tool** (find optimal LMSR parameter)
 - [x] **Comprehensive visualizations** (10-panel dashboard + mechanism explanation)
+
+**Testing & Quality**
+- [x] Unit tests for markets, contracts, agents (12 tests)
+- [x] Unit tests for metrics (16 tests)
+- [x] Unit tests for environments (15 tests)
+- [x] **43 tests passing** with pytest
 
 **Experiments**
 - [x] Experiment 1: Aggregation in Hayekian environment
@@ -140,11 +182,14 @@ This enables smooth testing across the information spectrum rather than three di
 ```bash
 # Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
+source venv/bin/activate  # Linux/Mac
+# On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install numpy scipy pandas matplotlib plotly statsmodels pytest
+
+# Run tests to verify installation
+python -m pytest tests/ -v
 ```
 
 ### Run Visualizations
@@ -264,4 +309,4 @@ MIT License - See LICENSE file for details
 
 ## Contact
 
-For questions about the theoretical framework or simulation design, see the blog series in `Writing/` or open an issue on GitHub.
+For questions about the theoretical framework or simulation design, see the blog series in `Writing/` or the development history in `history.md`.

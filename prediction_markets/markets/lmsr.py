@@ -37,7 +37,7 @@ def logsumexp(x: np.ndarray) -> float:
 
 
 @dataclass
-class LSMRMarket(Market):
+class LMSRMarket(Market):
     """
     Logarithmic Market Scoring Rule (LMSR) automated market maker.
 
@@ -245,6 +245,10 @@ class LSMRMarket(Market):
         prices = self.get_prices()
         price_str = ", ".join(f"{p:.3f}" for p in prices)
         return (
-            f"LSMRMarket(contract={self.contract.name}, "
+            f"LMSRMarket(contract={self.contract.name}, "
             f"liquidity={self.liquidity}, prices=[{price_str}])"
         )
+
+
+# Backward compatibility alias (typo in original name)
+LSMRMarket = LMSRMarket

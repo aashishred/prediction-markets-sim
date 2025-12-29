@@ -2,7 +2,7 @@
 
 from .base import Agent, AgentState
 from .informed import InformedAgent
-from .noise import NoiseTrader
+from .noise import NoiseTrader, NoiseTraderType
 from .discovery import (
     Signal,
     DiscoveryOpportunity,
@@ -12,14 +12,18 @@ from .discovery import (
 from .discoverer import DiscovererAgent, AdaptiveDiscoverer
 
 __all__ = [
+    # Base classes
     "Agent",
     "AgentState",
+    # Agent types
     "InformedAgent",
     "NoiseTrader",
+    "NoiseTraderType",
+    "DiscovererAgent",
+    "AdaptiveDiscoverer",
+    # Discovery infrastructure
     "Signal",
     "DiscoveryOpportunity",
     "DiscoveryModel",
     "DiscoveryRecord",
-    "DiscovererAgent",
-    "AdaptiveDiscoverer",
 ]
